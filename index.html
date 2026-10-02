@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Heart disease prediction model demo">
+  <title>Pulse — Heart Disease Predictor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="ambient ambient-a"></div>
+  <div class="ambient ambient-b"></div>
+
+  <header class="topbar">
+    <a class="brand" href="#">
+      <span class="brand-mark"><span></span></span>
+      <span>PULSE</span>
+    </a>
+    <div class="model-pill"><span class="dot"></span> Logistic Regression · 15 features</div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <div class="eyebrow"><span></span> ML HEALTH DEMO</div>
+        <h1>Understand the signal<br><em>behind your heart.</em></h1>
+        <p>Enter the patient parameters below. The model processes the same features and preprocessing used during training and returns a probability-based prediction.</p>
+      </div>
+      <div class="pulse-visual" aria-hidden="true">
+        <div class="pulse-ring r1"></div>
+        <div class="pulse-ring r2"></div>
+        <div class="heart">♥</div>
+        <svg viewBox="0 0 320 90" preserveAspectRatio="none">
+          <polyline points="0,45 45,45 58,45 69,22 79,68 90,45 128,45 143,45 154,10 167,78 181,45 215,45 228,45 239,30 248,60 259,45 320,45"/>
+        </svg>
+      </div>
+    </section>
+
+    <section class="app-grid">
+      <form class="panel form-panel" id="predictionForm">
+        <div class="panel-head">
+          <div>
+            <span class="section-kicker">01 / INPUT</span>
+            <h2>Patient profile</h2>
+          </div>
+          <button type="button" class="reset-btn" id="resetBtn">Reset</button>
+        </div>
+
+        <div class="field-grid">
+          <div class="field slider-field">
+            <div class="field-top"><label for="age">Age</label><output id="ageOut">55</output></div>
+            <input id="age" type="range" min="18" max="100" value="55" step="1">
+            <div class="range-labels"><span>18</span><span>100</span></div>
+          </div>
+
+          <div class="field slider-field">
+            <div class="field-top"><label for="bp">Resting BP</label><output id="bpOut">140</output></div>
+            <input id="bp" type="range" min="70" max="220" value="140" step="1">
+            <div class="range-labels"><span>70</span><span>220 mmHg</span></div>
+          </div>
+
+          <div class="field slider-field">
+            <div class="field-top"><label for="chol">Cholesterol</label><output id="cholOut">250</output></div>
+            <input id="chol" type="range" min="80" max="650" value="250" step="1">
+            <div class="range-labels"><span>80</span><span>650 mg/dL</span></div>
+          </div>
+
+          <div class="field slider-field">
+            <div class="field-top"><label for="maxhr">Max heart rate</label><output id="maxhrOut">150</output></div>
+            <input id="maxhr" type="range" min="60" max="220" value="150" step="1">
+            <div class="range-labels"><span>60</span><span>220 bpm</span></div>
+          </div>
+
+          <div class="field slider-field">
+            <div class="field-top"><label for="oldpeak">Oldpeak</label><output id="oldpeakOut">1.2</output></div>
+            <input id="oldpeak" type="range" min="0" max="7" value="1.2" step="0.1">
+            <div class="range-labels"><span>0</span><span>7</span></div>
+          </div>
+
+          <div class="field select-field">
+            <label for="sex">Sex</label>
+            <select id="sex">
+              <option value="F">Female</option>
+              <option value="M" selected>Male</option>
+            </select>
+          </div>
+
+          <div class="field select-field">
+            <label for="chest">Chest pain type</label>
+            <select id="chest">
+              <option value="ASY">Asymptomatic</option>
+              <option value="ATA">Atypical angina</option>
+              <option value="NAP" selected>Non-anginal pain</option>
+              <option value="TA">Typical angina</option>
+            </select>
+          </div>
+
+          <div class="field select-field">
+            <label for="ecg">Resting ECG</label>
+            <select id="ecg">
+              <option value="LVH">LV hypertrophy</option>
+              <option value="Normal" selected>Normal</option>
+              <option value="ST">ST-T abnormality</option>
+            </select>
+          </div>
+
+          <div class="field select-field">
+            <label for="slope">ST slope</label>
+            <select id="slope">
+              <option value="Down">Downsloping</option>
+              <option value="Flat" selected>Flat</option>
+              <option value="Up">Upsloping</option>
+            </select>
+          </div>
+
+          <div class="field toggle-field">
+            <div><label>Fasting blood sugar</label><small>&gt; 120 mg/dL</small></div>
+            <button type="button" class="toggle" id="fasting" aria-pressed="false"><span></span></button>
+          </div>
+
+          <div class="field toggle-field">
+            <div><label>Exercise angina</label><small>Exercise-induced chest pain</small></div>
+            <button type="button" class="toggle" id="exercise" aria-pressed="false"><span></span></button>
+          </div>
+        </div>
+
+        <button class="predict-btn" type="submit">
+          <span>Run prediction</span>
+          <span class="arrow">↗</span>
+        </button>
+      </form>
+
+      <aside class="panel result-panel" id="resultPanel">
+        <div class="panel-head">
+          <div>
+            <span class="section-kicker">02 / RESULT</span>
+            <h2>Model output</h2>
+          </div>
+          <div class="status-dot" id="statusDot"></div>
+        </div>
+
+        <div class="result-idle" id="idleState">
+          <div class="mini-wave"></div>
+          <h3>Ready when you are.</h3>
+          <p>Adjust the parameters and run the model to see its output.</p>
+        </div>
+
+        <div class="result-content hidden" id="resultContent">
+          <div class="probability-wrap">
+            <div class="probability" id="probability">0%</div>
+            <div class="probability-label">predicted probability</div>
+          </div>
+
+          <div class="result-banner" id="resultBanner">
+            <span class="result-icon" id="resultIcon">!</span>
+            <div>
+              <strong id="resultTitle">Prediction</strong>
+              <p id="resultText">Model output</p>
+            </div>
+          </div>
+
+          <div class="meter">
+            <div class="meter-track"><div class="meter-fill" id="meterFill"></div></div>
+            <div class="meter-labels"><span>0%</span><span>50%</span><span>100%</span></div>
+          </div>
+
+          <div class="details">
+            <div><span>Model</span><strong>Logistic Regression</strong></div>
+            <div><span>Features</span><strong>15</strong></div>
+            <div><span>Decision threshold</span><strong>50%</strong></div>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="notice">
+      <span class="notice-icon">i</span>
+      <p><strong>Educational model demo.</strong> This prediction is generated by a machine-learning model and is not a medical diagnosis. Do not use it to make healthcare decisions.</p>
+    </section>
+  </main>
+
+  <footer>Built as a machine-learning deployment demo · Model: Logistic Regression</footer>
+  <script src="script.js"></script>
+</body>
+</html>
